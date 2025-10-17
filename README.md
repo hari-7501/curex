@@ -1,24 +1,18 @@
 # README
+* TRD
+    https://docs.google.com/document/d/1FkaArRI6JgkQ4QfBm3WxHHF4rNeYZbC5TgLc2ykgTz0/
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+* Ruby & rails versions
+    ruby 2.5.6p201 (2019-08-28 revision 67796) [x86_64-darwin24]
+    Rails 6.0.6.1
 
-Things you may want to cover:
+* Database
+    postgres -> localhost:5432/curex_development
 
-* Ruby version
+* to start & stop puma server
+    rails s
+    Ctrl + C
 
-* System dependencies
 
-* Configuration
 
-* Database creation
 
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
