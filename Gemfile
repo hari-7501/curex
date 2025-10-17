@@ -39,3 +39,6 @@ end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
+
+# For composite keys support
+gem 'composite_primary_keys', '~> 12.0', '>= 12.0.10'
