@@ -1,6 +1,6 @@
 class CreateWallets < ActiveRecord::Migration[6.0]
   def change
-    create_table :wallets do |t|
+    create_table :wallets, id: false do |t|
       t.uuid :user_id, null: false
       t.string :currency, null: false
       t.decimal :balance, precision: 25, scale: 10, default: 0.0, null: false
