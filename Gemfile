@@ -42,3 +42,13 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
 # For composite keys support
 gem 'composite_primary_keys', '~> 12.0', '>= 12.0.10'
+# For environment variable management
+gem 'dotenv-rails', groups: [:development, :test]
+# For JWT generation and validation
+gem 'jwt', '~> 2.2'
+# For background job processing
+gem 'sidekiq', '~> 6.0'
+# For scheduling periodic jobs
+gem 'whenever', require: false
+# For pagination
+gem 'kaminari', '~> 1.2'

@@ -6,4 +6,8 @@ class User < ApplicationRecord
     has_many :wallets, foreign_key: :user_id
     has_many :sent_transactions, class_name: 'Transaction', foreign_key: :sender_user_id
     has_many :received_transactions, class_name: 'Transaction', foreign_key: :receiver_user_id
+
+    def transactions
+      Transaction.where("sender_user_id = ? OR receiver_user_id = ?", id, id)
+    end
 end

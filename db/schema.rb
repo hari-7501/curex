@@ -40,7 +40,7 @@ ActiveRecord::Schema.define(version: 2025_10_17_185547) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
-  create_table "wallets", force: :cascade do |t|
+  create_table "wallets", id: false, force: :cascade do |t|
     t.uuid "user_id", null: false
     t.string "currency", null: false
     t.decimal "balance", precision: 25, scale: 10, default: "0.0", null: false
