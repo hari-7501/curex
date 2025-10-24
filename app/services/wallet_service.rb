@@ -33,7 +33,5 @@ class WalletService
 
     serialized_wallet = BaseSerializer.new(wallet, fields: [:currency, :balance]).serialize
     Result.new(true, serialized_wallet, nil)
-  rescue StandardError => e
-    Result.new(false, nil, e.message)
   end
 end

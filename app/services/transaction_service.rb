@@ -40,6 +40,7 @@ class TransactionService
         update_wallets!(sender_wallet, receiver_wallet, amount, currency_conversion_rate, currency_conversion_fee)
         create_transaction_record(sender_wallet, receiver_wallet, amount, currency_conversion_rate, currency_conversion_fee)
       end
+      SmsWorker.perform_async(@mobile, "Your transfer of #{amount} #{@params[:from_currency]} to #{@params[:to_currency]} was successful.")
       Result.new(true, { message: 'Transfer successful' }, nil)
     end
 
