@@ -31,6 +31,13 @@ class TransactionService
 
       sender_wallet = @user.wallets.find_by!(currency: @params[:from_currency])
       receiver_wallet = Wallet.find_by!(user_id: @params[:receiver_id], currency: @params[:to_currency])
+      if(sender_wallet.nil? || receiver_wallet.nil?)
+        return Result.new(false, nil, "Wallet not found")
+      end
+      if sender_wallet.user_id == receiver_wallet.user_id
+        return Result.new(false, nil, "Cannot transfer to the same user")
+      end
+
       amount = BigDecimal(@params[:amount].to_s)
       currency_conversion_rate = fetch_conversion_rate
       currency_conversion_fee = calculate_conversion_fee(sender_wallet, receiver_wallet, amount)
@@ -56,8 +63,15 @@ class TransactionService
     end
 
     def update_wallets!(sender_wallet, receiver_wallet, amount, rate, fee)
-      sender_wallet.update!(balance: sender_wallet.balance - amount - fee)
-      receiver_wallet.update!(balance: receiver_wallet.balance + amount * rate)
+      first, second = [sender_wallet, receiver_wallet].sort_by(&:id)
+      Wallet.transaction do
+        first.with_lock do
+          second.with_lock do
+            sender_wallet.update!(balance: sender_wallet.balance - amount - fee)
+            receiver_wallet.update!(balance: receiver_wallet.balance + amount * rate)
+          end
+        end
+      end
     end
 
     def create_transaction_record(sender_wallet, receiver_wallet, amount, rate, fee)

@@ -23,9 +23,11 @@ class WalletService
       case @params[:type] 
       when 'deposit'
         wallet.update!(balance: wallet.balance + @params[:amount])
+        create_transaction_record(nil, wallet, @params[:amount], 1, 0)
       when 'withdraw'
         return Result.new(false, nil, "Insufficient balance") if wallet.balance < @params[:amount]
         wallet.update!(balance: wallet.balance - @params[:amount])
+        create_transaction_record(wallet, nil, @params[:amount], 1, 0)
       else
         return Result.new(false, nil, "Invalid type: #{@params[:type]}")
       end
