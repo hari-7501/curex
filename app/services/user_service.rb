@@ -34,7 +34,9 @@ class UserService
         jwt = JwtService.generate(user)
         return Result.new(true, { jwt: jwt }, nil)
       else
-        OtpService.new(user.mobile).send_otp
+        if(RedisService.get("otp:#{user.mobile}").nil?)
+          OtpService.new(user.mobile).send_otp
+        end
         return Result.new(true, { message: "OTP sent to mobile" }, nil)
       end
     end
