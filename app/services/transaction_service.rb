@@ -1,12 +1,13 @@
 class TransactionService
     include ParamsValidator
+    include TransactionUtils
 
     CONVERSION_FEE_PERCENTAGE = BigDecimal('0.0001')
     PAGINATION_DEFAULT_PER_PAGE = 10
     PAGINATION_MAX_PER_PAGE = 100
 
     def initialize(user, params)
-      @user = user
+    @user = user
       @params = params
     end
 
@@ -34,8 +35,8 @@ class TransactionService
       if(sender_wallet.nil? || receiver_wallet.nil?)
         return Result.new(false, nil, "Wallet not found")
       end
-      if sender_wallet.user_id == receiver_wallet.user_id
-        return Result.new(false, nil, "Cannot transfer to the same user")
+      if((@user.id == @params[:receiver_id])&&(@params[:from_currency] == @params[:to_currency]))
+        return Result.new(false, nil, "Cannot transfer to the same wallet")
       end
 
       amount = BigDecimal(@params[:amount].to_s)
@@ -47,7 +48,14 @@ class TransactionService
         update_wallets!(sender_wallet, receiver_wallet, amount, currency_conversion_rate, currency_conversion_fee)
         create_transaction_record(sender_wallet, receiver_wallet, amount, currency_conversion_rate, currency_conversion_fee)
       end
-      SmsWorker.perform_async(@mobile, "Your transfer of #{amount} #{@params[:from_currency]} to #{@params[:to_currency]} was successful.")
+
+      sender_mobile = @user.mobile
+      receiver_mobile = receiver_wallet.user.mobile
+      if(sender_mobile != receiver_mobile)
+        SmsWorker.perform_async(sender_mobile, "Your transfer of #{amount} #{@params[:from_currency]} to #{receiver_mobile} was successful.")
+        SmsWorker.perform_async(receiver_mobile, "You have received #{amount * currency_conversion_rate} #{@params[:to_currency]} from #{@user.first_name} #{@user.last_name}.")
+      end
+
       Result.new(true, { message: 'Transfer successful' }, nil)
     end
 
@@ -73,16 +81,5 @@ class TransactionService
         end
       end
     end
-
-    def create_transaction_record(sender_wallet, receiver_wallet, amount, rate, fee)
-        Transaction.create!(
-        sender_user_id: sender_wallet.user_id,
-        receiver_user_id: receiver_wallet.user_id,
-        sender_currency: sender_wallet.currency,
-        receiver_currency: receiver_wallet.currency,
-        transaction_amount: amount,
-        currency_conversion_rate: rate,
-        currency_conversion_fee: fee
-        )
-    end
+    
 end
