@@ -10,17 +10,17 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2025_10_17_185547) do
+ActiveRecord::Schema.define(version: 2025_10_27_081334) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
 
   create_table "transactions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.uuid "sender_user_id", null: false
-    t.uuid "receiver_user_id", null: false
-    t.string "sender_currency", null: false
-    t.string "receiver_currency", null: false
+    t.uuid "sender_user_id"
+    t.uuid "receiver_user_id"
+    t.string "sender_currency"
+    t.string "receiver_currency"
     t.decimal "transaction_amount", precision: 25, scale: 10, null: false
     t.decimal "currency_conversion_rate", precision: 25, scale: 10, null: false
     t.decimal "currency_conversion_fee", precision: 25, scale: 10, null: false

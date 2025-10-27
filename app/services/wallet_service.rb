@@ -1,5 +1,6 @@
 class WalletService
   include ParamsValidator
+  include TransactionUtils
 
   def initialize(user, params = {})
     @user = user
