@@ -67,7 +67,7 @@ class TransactionService
     end
 
     def fetch_conversion_rate
-      BigDecimal(RedisService.hget("rates:#{@params[:from_currency]}", @params[:to_currency]))
+      BigDecimal(RedisService.hget("currency_rates:#{@params[:from_currency]}", @params[:to_currency]))
     end
 
     def update_wallets!(sender_wallet, receiver_wallet, amount, rate, fee)

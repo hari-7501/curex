@@ -11,11 +11,28 @@ class ApplicationController < ActionController::API
 
   def internal_error(exception)
     log_error(exception)
-    SlackNotifyWorker.perform_async("[#{exception.class}] #{exception.message}\n#{exception.backtrace&.first(10).join("\n")}", "fatal")
+    SlackNotifyWorker.perform_async(
+      <<~MSG,
+      🚨 *[#{Rails.env.upcase}] #{exception.class}*
+      *Message:* #{exception.message}
+      *File:* #{exception.backtrace&.first}
+      *Request ID:* #{request&.request_id}
+      *Path:* #{request&.path}
+      *HTTP Method:* #{request&.method}
+      *Controller:* #{controller_name}##{action_name}
+      *User ID:* #{current_user&.id || 'N/A'}
+      *Params:* #{request&.filtered_parameters.to_json}
+      *Occurred At:* #{Time.current}
+
+      *Backtrace (top 10):*
+      ```#{exception.backtrace&.first(10)&.join("\n")}```
+      MSG
+      "fatal"
+    )
     render json: { error: "Internal Server Error" }, status: :internal_server_error
   end
 
   def log_error(exception)
-    Rails.logger.error({ error_class: exception.class.name, message: exception.message, backtrace: exception.backtrace&.first(10) }.to_json)
+    Rails.logger.error({ error_class: exception.class.name, message: exception.message, backtrace: exception.backtrace&.first(0) }.to_json)
   end
 end

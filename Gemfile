@@ -50,5 +50,6 @@ gem 'jwt', '~> 2.2'
 gem 'sidekiq', '~> 6.0'
 # For scheduling periodic jobs
 gem 'whenever', require: false
+gem 'rb-fsevent', '~> 0.10', require: false
 # For pagination
 gem 'kaminari', '~> 1.2'

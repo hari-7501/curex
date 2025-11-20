@@ -14,21 +14,24 @@ class CurrencyMatrixService
     CURRENCIES.each do |currency|
       pool.post do
         data = fetch_currency(currency)
-        rates = data[currency].slice(*CURRENCIES)
-        results[currency] = rates
+        currency_rates = data[currency].slice(*CURRENCIES)
+        results[currency] = currency_rates
       end
     end
 
     pool.shutdown
     pool.wait_for_termination
 
-    results.each do |currency, rates|
-      RedisService.hset("rates:#{currency}", rates)
-      RedisService.expire("rates:#{currency}", EXPIRY)
+    results.each do |currency, currency_rates|
+      RedisService.hset("currency_rates:#{currency}", currency_rates)
+      RedisService.expire("currency_rates:#{currency}", EXPIRY)
     end
 
+    RedisService.set("currency_rates:last_updated", Time.now.to_s)
     results
   end
+
+  private
 
   def self.fetch_currency(currency)
     uri = URI("#{BASE_URL}/#{currency}.json")
