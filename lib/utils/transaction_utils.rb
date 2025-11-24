@@ -1,5 +1,5 @@
 module TransactionUtils
-  def create_transaction_record(sender_wallet, receiver_wallet, amount, rate, fee)
+  def create_transaction_record!(sender_wallet, receiver_wallet, amount, rate, fee)
     Transaction.create!(
       sender_user_id: sender_wallet&.user_id,
       receiver_user_id: receiver_wallet&.user_id,

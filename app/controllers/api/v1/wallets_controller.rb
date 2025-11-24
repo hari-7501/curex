@@ -1,17 +1,16 @@
-class Api::V1::WalletsController < Api::V1::BaseController
+class Api::V1::WalletsController < ApplicationController
   include ParamsHelper
-  include ServiceResponseHandler
 
   ALLOWED_FIELDS = [:currency, :amount, :type].freeze
 
   def index
-    result = WalletService.new(current_user).list_wallets
-    render_service_result(result)
+    wallets = WalletService.new(current_user).list_wallets
+    render json: { wallets: WalletBlueprint.render_as_hash(wallets) }, status: :ok
   end
 
   def create
     wallet_params = permitted_params(ALLOWED_FIELDS)
-    result = WalletService.new(current_user, wallet_params).update_wallet
-    render_service_result(result)
+    wallet = WalletService.new(current_user, wallet_params).add_or_remove_funds
+    render json: { wallet: WalletBlueprint.render_as_hash(wallet) }, status: :ok
   end
 end

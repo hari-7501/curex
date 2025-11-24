@@ -1,6 +1,4 @@
-module ParamsHelper
-  extend ActiveSupport::Concern
-
+module ParamsHelper extend ActiveSupport::Concern
   def permitted_params_for(resource_name, allowed_fields)
     params.require(resource_name).permit(*allowed_fields)
   end

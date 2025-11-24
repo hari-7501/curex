@@ -2,9 +2,7 @@ require 'net/http'
 require 'uri'
 require 'json'
 
-class SmsGatewayService
-  class SmsError < StandardError; end
-
+class TextbeeSmsGatewayService
   TEXTBEE_URL = "https://api.textbee.dev/api/v1/gateway/devices/68f153c26a418a16ec879298/send-sms".freeze
   API_KEY = ENV.fetch("TEXT_BEE_API_KEY", "").freeze
   COUNTRY_CODE = "+91".freeze
@@ -19,6 +17,8 @@ class SmsGatewayService
     body = parse_response(response)
     validate_response!(response, body)
     true
+  rescue StandardError => e
+    raise NetworkCallError, "Failed to send SMS: #{e.message}"
   end
 
   private
@@ -54,12 +54,12 @@ class SmsGatewayService
   def parse_response(response)
     JSON.parse(response.body)
   rescue JSON::ParserError
-    raise SmsError, "Invalid JSON response from SMS gateway"
+    raise NetworkCallError.new("Invalid JSON response from SMS gateway: #{response.body}")
   end
 
   def validate_response!(response, body)
     data = body["data"] || {}
     success = response.is_a?(Net::HTTPSuccess) && data["success"] == true
-    raise SmsError, "SMS failed: #{body}" unless success
+    raise NetworkCallError.new("SMS failed: #{body}") unless success
   end
 end

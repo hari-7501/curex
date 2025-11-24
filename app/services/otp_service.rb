@@ -9,18 +9,18 @@ class OtpService
   # Generate and send OTP to the mobile number
   def send_otp
     otp = generate_otp
-    RedisService.set(otp_key, otp, ttl: OTP_TTL)
+    REDIS.setex(otp_key, OTP_TTL, otp)
     SmsWorker.perform_async(@mobile, "Your OTP is #{otp}. It is valid for #{OTP_TTL / 60} minutes.")  
     otp
   end
 
   # Verify the OTP entered by the user
   def verify_otp(input_otp)
-    stored_otp = RedisService.get(otp_key)
+    stored_otp = REDIS.get(otp_key)
     return false unless stored_otp
 
     if stored_otp == input_otp.to_s
-      RedisService.delete(otp_key)
+      REDIS.del(otp_key)
       true
     else
       false

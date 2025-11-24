@@ -1,0 +1,1 @@
+class NetworkCallError < StandardError; end

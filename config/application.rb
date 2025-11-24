@@ -33,5 +33,13 @@ module Curex
     # Middleware like session, flash, cookies can be added back manually.
     # Skip views, helpers and assets when generating a new resource.
     config.api_only = true
+
+    config.autoload_paths << Rails.root.join('lib')
+    config.autoload_paths << Rails.root.join('lib/exceptions')
+    config.autoload_paths << Rails.root.join('lib/exceptions/auth_error')
+    config.autoload_paths << Rails.root.join('lib/exceptions/network_call_error')
+    config.autoload_paths << Rails.root.join('lib/exceptions/validation_error')
+    config.autoload_paths << Rails.root.join('lib/utils')
+    config.autoload_paths << Rails.root.join('lib/utils/transaction_utils')
   end
 end

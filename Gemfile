@@ -53,3 +53,5 @@ gem 'whenever', require: false
 gem 'rb-fsevent', '~> 0.10', require: false
 # For pagination
 gem 'kaminari', '~> 1.2'
+# For API response formatting
+gem 'blueprinter'

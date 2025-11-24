@@ -57,6 +57,7 @@ GEM
       tzinfo (~> 1.1)
       zeitwerk (~> 2.2, >= 2.2.2)
     base64 (0.3.0)
+    blueprinter (0.25.3)
     bootsnap (1.13.0)
       msgpack (~> 1.2)
     builder (3.3.0)
@@ -73,6 +74,7 @@ GEM
       dotenv (= 2.8.1)
       railties (>= 3.2)
     erubi (1.13.1)
+    ffi (1.17.2)
     ffi (1.17.2-x86_64-darwin)
     globalid (1.1.0)
       activesupport (>= 5.0)
@@ -108,6 +110,7 @@ GEM
     marcel (1.1.0)
     method_source (1.1.0)
     mini_mime (1.1.2)
+    mini_portile2 (2.6.1)
     minitest (5.15.0)
     msgpack (1.8.0)
     net-imap (0.2.2)
@@ -124,6 +127,9 @@ GEM
       net-protocol
       timeout
     nio4r (2.7.3)
+    nokogiri (1.12.5)
+      mini_portile2 (~> 2.6.1)
+      racc (~> 1.4)
     nokogiri (1.12.5-x86_64-darwin)
       racc (~> 1.4)
     pg (1.5.9)
@@ -196,9 +202,11 @@ GEM
     zeitwerk (2.6.18)
 
 PLATFORMS
+  ruby
   x86_64-darwin-24
 
 DEPENDENCIES
+  blueprinter
   bootsnap (>= 1.4.2)
   byebug
   composite_primary_keys (~> 12.0, >= 12.0.10)
@@ -221,4 +229,4 @@ RUBY VERSION
    ruby 2.5.6p201
 
 BUNDLED WITH
-   2.3.27
+   1.17.3

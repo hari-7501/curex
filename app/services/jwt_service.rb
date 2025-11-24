@@ -5,8 +5,6 @@ class JwtService
   ALGORITHM = 'HS256'
   EXPIRY = 24.hours.from_now.to_i
 
-  class JwtError < StandardError; end
-
   # Generate JWT for a user
   def self.generate(user)
     payload = {
@@ -21,8 +19,8 @@ class JwtService
     decoded = JWT.decode(token, SECRET_KEY, true, { algorithm: ALGORITHM })
     decoded.first.symbolize_keys
   rescue JWT::ExpiredSignature
-    raise JwtError, "Token has expired"
+    raise AuthError.new("Token has expired: #{e.message}")
   rescue JWT::DecodeError => e
-    raise JwtError, "Invalid token: #{e.message}"
+    raise AuthError.new("Invalid token: #{e.message}")
   end
 end

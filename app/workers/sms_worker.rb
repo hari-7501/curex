@@ -3,8 +3,6 @@ class SmsWorker
   sidekiq_options queue: :default, retry: 3
 
   def perform(mobile, message)
-    SmsGatewayService.new(mobile, message).send_sms
-  rescue SmsGatewayService::SmsError => e
-    Rails.logger.error("Failed to send SMS to #{mobile}: #{e.message}")
+    TextbeeSmsGatewayService.new(mobile, message).send_sms
   end
 end

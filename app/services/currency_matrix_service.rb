@@ -23,11 +23,11 @@ class CurrencyMatrixService
     pool.wait_for_termination
 
     results.each do |currency, currency_rates|
-      RedisService.hset("currency_rates:#{currency}", currency_rates)
-      RedisService.expire("currency_rates:#{currency}", EXPIRY)
+      REDIS.mapped_hmset("currency_rates:#{currency}", currency_rates)
+      REDIS.expire("currency_rates:#{currency}", EXPIRY)
     end
 
-    RedisService.set("currency_rates:last_updated", Time.now.to_s)
+    REDIS.set("currency_rates:last_updated", Time.now.to_s)
     results
   end
 
@@ -39,7 +39,7 @@ class CurrencyMatrixService
     raise "Failed for #{currency}" unless response.is_a?(Net::HTTPSuccess)
     JSON.parse(response.body)
   rescue StandardError => e
-    Rails.logger.error("Currency fetch failed: #{e.message}")
+    raise NetworkCallError.new(e.message)
     { currency => {} }
   end
 end
