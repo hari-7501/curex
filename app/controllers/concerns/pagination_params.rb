@@ -7,6 +7,10 @@ module PaginationParams extend ActiveSupport::Concern
     before_action :set_pagination_params
   end
 
+  def paginated_params
+    params.permit(:page, :per_page)
+  end
+
   private
 
   def set_pagination_params

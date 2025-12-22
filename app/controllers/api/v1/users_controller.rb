@@ -1,17 +1,24 @@
 class Api::V1::UsersController < ApplicationController
-  include ParamsHelper
 
-  skip_before_action :authenticate_request, only: [:create]
+  skip_before_action :authenticate_request
 
-  ALLOWED_FIELDS = [:mobile, :otp, :first_name, :last_name, :age].freeze
+  def send_otp
+    UserService.new(send_otp_params).send_otp
+    render json: { message: "OTP sent to #{send_otp_params[:mobile]} successfully!!!" }
+  end
 
-  def create
-    user_params = permitted_params_for(:user, ALLOWED_FIELDS)
-    jwt = UserService.new(user_params).user_auth_handler
-    if(jwt.present?)
-      render json: { jwt: jwt }, status: :ok 
-    else
-      render json: { message: "OTP sent to #{user_params[:mobile]} successfully!!!" }, status: :ok
-    end
+  def verify_otp
+    jwt = UserService.new(verify_otp_params).verify_otp
+    render json: { jwt: jwt }
+  end
+
+  private
+
+  def send_otp_params
+    params.permit(:mobile, :first_name, :last_name, :age)
+  end
+
+  def verify_otp_params
+    params.permit(:mobile, :otp)
   end
 end

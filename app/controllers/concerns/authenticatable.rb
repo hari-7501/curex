@@ -11,13 +11,9 @@ module Authenticatable
     header = request.headers['Authorization']
     token = header&.split(' ')&.last
     return render_unauthorized("Missing token") unless token
-
-    begin
-      payload = JwtService.validate(token)
-      @current_user = User.find(payload[:user_id])
-    rescue JwtService::JwtError => e
-      raise AuthError.new(e.message)
-    end
+    
+    payload = JwtService.validate(token)
+    @current_user = User.find(payload[:user_id])
   end
 
   def current_user
