@@ -18,9 +18,9 @@ class JwtService
   def self.validate(token)
     decoded = JWT.decode(token, SECRET_KEY, true, { algorithm: ALGORITHM })
     decoded.first.symbolize_keys
-  rescue JWT::ExpiredSignature => e
+  rescue JWT::ExpiredSignature 
     raise AuthError.new("Token has expired")
-  rescue JWT::DecodeError => e
+  rescue JWT::DecodeError
     raise AuthError.new("Invalid token")
   end
 end
